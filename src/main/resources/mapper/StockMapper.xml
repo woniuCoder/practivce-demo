@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.socialecom.mapper.StockMapper">
+    <update id="decreaseStock">
+        update stock
+        set stock_count = stock_count - #{stockCount}
+        where sku_id = #{skuId}
+          and shop_id = #{shopId}
+          and stock_count >= #{stockCount}
+    </update>
+    <update id="tradeRollbackStock">
+        update stock
+        set stock_count = stock_count + #{stockCount}
+        where sku_id = #{skuId}
+          and shop_id = #{shopId}
+    </update>
+</mapper>
