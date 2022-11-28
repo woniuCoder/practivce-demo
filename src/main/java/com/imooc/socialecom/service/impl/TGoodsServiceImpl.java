@@ -24,7 +24,7 @@ public class TGoodsServiceImpl extends ServiceImpl<TGoodsMapper, TGoods> impleme
     private TGoodsMapper tGoodsMapper;
 
     @Override
-    @CacheDemo(cacheName = Constants.GOODS_CACHE_KEY, key = "#id")
+    @CacheDemo(cacheName = Constants.GOODS_CACHE_KEY, key = "#id", expireInSeconds = 1, waitInSeconds = 2)
     public TGoods findById(Long id) {
         return tGoodsMapper.selectById(id);
     }

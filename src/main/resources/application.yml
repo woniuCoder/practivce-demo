@@ -1,0 +1,4 @@
+mycacheable:
+  rate:
+    limit:
+      map: {getGoods: 0.1, goodsList: 20}

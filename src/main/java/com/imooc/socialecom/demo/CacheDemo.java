@@ -32,4 +32,11 @@ public @interface CacheDemo {
      */
     int expireInSeconds() default 0;
 
+    /**
+     * 默认超时时间
+     *
+     * @return
+     */
+    int waitInSeconds() default 0;
+
 }
