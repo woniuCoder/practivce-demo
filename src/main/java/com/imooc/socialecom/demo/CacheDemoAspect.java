@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.RateLimiter;
 import com.imooc.socialecom.pojo.TGoods;
+import lombok.Getter;
 import lombok.Setter;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @ConfigurationProperties(prefix = "mycacheable.rate.limit")
 @Setter
+@Getter
 public class CacheDemoAspect {
 
 
@@ -52,6 +54,7 @@ public class CacheDemoAspect {
 
     @PostConstruct
     private void initRateLimiterMap() {
+        System.out.println("打印map数据：{}" + map);
         if (!CollectionUtils.isEmpty(map)) {
             map.forEach((methodName, permits) -> {
                 RateLimiter rateLimiter = RateLimiter.create(permits);
@@ -66,6 +69,23 @@ public class CacheDemoAspect {
         String cacheKey = null;
         //获取方法签名
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        //TODO 限流处理
+        Method method = methodSignature.getMethod();
+        String name = method.getName();
+        RateLimiter rateLimiter = rateLimiterMap.get(name);
+        //获取令牌
+        if (rateLimiter != null) {
+            int timeOut = cacheDemo.waitInSeconds();
+            if (timeOut <= 0) {
+                rateLimiter.acquire();
+            } else {
+                boolean acquire = rateLimiter.tryAcquire(timeOut, TimeUnit.SECONDS);
+                if (!acquire) {
+                    throw new RuntimeException("系统繁忙");
+                }
+            }
+        }
+
         //spring获取参数列表
         DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
         //获取参数名列表
@@ -85,22 +105,6 @@ public class CacheDemoAspect {
             return JSONObject.parseObject(value.toString(), TGoods.class);
         }
 
-        //TODO 限流处理
-        Method method = methodSignature.getMethod();
-        String name = method.getName();
-        RateLimiter rateLimiter = rateLimiterMap.get(name);
-        //获取令牌
-        if (rateLimiter != null) {
-            int timeOut = cacheDemo.waitInSeconds();
-            if (timeOut <= 0) {
-                rateLimiter.acquire();
-            } else {
-                boolean acquire = rateLimiter.tryAcquire(timeOut, TimeUnit.SECONDS);
-                if (!acquire) {
-                    throw new RuntimeException("系统繁忙");
-                }
-            }
-        }
         value = joinPoint.proceed();
         logger.info("get after key : {}, get after value : {}", cacheKey, value);
         if (cacheDemo.expireInSeconds() <= 0) {
