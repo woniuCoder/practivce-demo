@@ -15,7 +15,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties(prefix = "mycacheable.rate.limit")
 @Setter
 @Getter
+@RefreshScope
 public class CacheDemoAspect {
 
 
@@ -49,11 +52,18 @@ public class CacheDemoAspect {
     //key：getGoods value：goodsList
     private Map<String, Double> map;
 
+    @Value("${methodName.findById.demo.key}")
+    private String key;
+    @Value("${limit.goodsList.demo.value}")
+    private String value;
+
     @Autowired
     private StringRedisTemplate redisTemplate;
 
     @PostConstruct
     private void initRateLimiterMap() {
+        System.out.println("打印Key：" + key);
+        System.out.println("打印Value：" + value);
         System.out.println("打印map数据：{}" + map);
         if (!CollectionUtils.isEmpty(map)) {
             map.forEach((methodName, permits) -> {
