@@ -125,5 +125,9 @@ public class CacheDemoAspect {
         return value;
     }
 
+    public void test() {
+        System.out.println("测试提交");
+    }
+
 
 }
