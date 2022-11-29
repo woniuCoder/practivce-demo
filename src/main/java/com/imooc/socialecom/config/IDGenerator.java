@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
  * 基于Redis的分布式ID生成器
  */
 @Component
+@SuppressWarnings("all")
 public class IDGenerator {
 
     @Resource
