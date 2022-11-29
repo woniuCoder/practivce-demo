@@ -62,9 +62,6 @@ public class CacheDemoAspect {
 
     @PostConstruct
     private void initRateLimiterMap() {
-        System.out.println("打印Key：" + key);
-        System.out.println("打印Value：" + value);
-        System.out.println("打印map数据：{}" + map);
         if (!CollectionUtils.isEmpty(map)) {
             map.forEach((methodName, permits) -> {
                 RateLimiter rateLimiter = RateLimiter.create(permits);
@@ -123,10 +120,6 @@ public class CacheDemoAspect {
             redisTemplate.opsForValue().set(cacheKey, JSON.toJSONString(value), cacheDemo.expireInSeconds());
         }
         return value;
-    }
-
-    public void test() {
-        System.out.println("测试提交");
     }
 
 
