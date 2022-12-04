@@ -1,15 +1,13 @@
 package com.imooc.socialecom.controller;
 
 
+import com.google.common.util.concurrent.RateLimiter;
 import com.imooc.socialecom.base.JsonReturnType;
 import com.imooc.socialecom.pojo.Stock;
 import com.imooc.socialecom.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -23,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stock")
 public class StockController {
 
+    RateLimiter rateLimiter = RateLimiter.create(12);
+
     @Autowired
     private StockService stockService;
 
@@ -30,4 +30,10 @@ public class StockController {
     public JsonReturnType create(@RequestBody Stock stock) {
         return JsonReturnType.createType(stockService.increaseStock(stock.getSkuId(), stock.getShopId(), stock.getStockCount()));
     }
+
+    @GetMapping("/check")
+    public JsonReturnType check(@RequestBody Stock stock) {
+        return JsonReturnType.createType(stock);
+    }
+
 }

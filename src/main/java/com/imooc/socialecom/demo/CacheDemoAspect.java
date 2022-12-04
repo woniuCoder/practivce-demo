@@ -68,7 +68,6 @@ public class CacheDemoAspect {
                 rateLimiterMap.put(methodName, rateLimiter);
             });
         }
-
     }
 
     @Around("@annotation(cacheDemo)")

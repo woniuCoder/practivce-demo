@@ -1,5 +1,6 @@
 package com.imooc.socialecom.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.imooc.socialecom.pojo.Stock;
 import com.imooc.socialecom.mapper.StockMapper;
