@@ -98,12 +98,12 @@ public class CacheDemoAspect {
         String[] parameterNames = discoverer.getParameterNames(methodSignature.getMethod());
         //获取参数值列表
         Object[] args = joinPoint.getArgs();
-        ExpressionParser expressionParser = new SpelExpressionParser();
-        Expression expression = expressionParser.parseExpression(cacheDemo.key());
         EvaluationContext evaluationContext = new StandardEvaluationContext();
         for (int i = 0; i < parameterNames.length; i++) {
             evaluationContext.setVariable(parameterNames[i], args[i]);
         }
+        ExpressionParser expressionParser = new SpelExpressionParser();
+        Expression expression = expressionParser.parseExpression(cacheDemo.key());
         cacheKey = cacheDemo.cacheName() + expression.getValue(evaluationContext);
         Object value = redisTemplate.opsForValue().get(cacheKey);
         logger.info(" get from key : {}, get from value : {}", cacheKey, value);
@@ -121,4 +121,7 @@ public class CacheDemoAspect {
         return value;
     }
 
+    public void add() {
+        //check
+    }
 }
